@@ -1,7 +1,7 @@
 const fs = require('fs')
 
-const answers = fs.readFileSync('resources/wordle/answers.txt', 'utf8').split('\n');
-const valid = fs.readFileSync('resources/wordle/guesses.txt', 'utf8').split('\n').concat(answers);
+const answers = fs.readFileSync('resources/wordle/answers.txt', 'utf8').split('\r\n');
+const valid = fs.readFileSync('resources/wordle/guesses.txt', 'utf8').split('\r\n').concat(answers);
 
 function update(guesses) {
     return `You have ${guesses} guesses left.`;
