@@ -1,7 +1,22 @@
 const fs = require('fs')
 
-const answers = fs.readFileSync('resources/wordle/answers.txt', 'utf8').split('\r').join(',').split('\n').join(',').split(',');
-const valid = fs.readFileSync('resources/wordle/guesses.txt', 'utf8').split('\r').join(',').split('\n').join(',').split(',').concat(answers);
+const answers = fs.readFileSync('resources/wordle/answers.txt', 'utf8').split('\r').join(',').split('\n').join(',').split(',').filter(i => i);
+const valid = fs.readFileSync('resources/wordle/guesses.txt', 'utf8').split('\r').join(',').split('\n').join(',').split(',').concat(answers).filter(i => i).sort();
+
+function search(arr, val) {
+    let L = 0, R = arr.length - 1;
+    while (R - L >= 0) {
+        let mid = L + Math.floor((R - L) / 2);
+        if (arr[mid] < val) {
+            L = mid + 1;
+        } else if (arr[mid] > val) {
+            R = mid - 1;
+        } else {
+            return true;
+        }
+    }
+    return false;
+}
 
 function update(guesses) {
     return `You have ${guesses} guesses left.`;
@@ -41,6 +56,7 @@ module.exports = {
 
         collector.on('collect', m => {
             if (m.content == "quit") {
+                message.channel.send(`The word was ${answer}.`);
                 message.channel.send("Ending game...");
                 collector.stop();
                 return;
@@ -51,7 +67,7 @@ module.exports = {
                 return;
             }
 
-            if (valid.findIndex(i => i.toLowerCase() == m.content.toLowerCase()) < 0) {
+            if (!search(valid, m.content.toLowerCase())) {
                 message.channel.send("That is not a valid word.");
                 return;
             }
@@ -90,7 +106,7 @@ module.exports = {
 
             if (guesses == 0) {
                 message.channel.send("You ran out of guesses. Game over!");
-                message.channel.send(`${answer} was the word.`);
+                message.channel.send(`The word was ${answer}.`);
                 message.channel.send("Ending game...");
                 collector.stop();
                 return;
