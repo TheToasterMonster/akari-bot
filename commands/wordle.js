@@ -115,6 +115,6 @@ module.exports = {
             message.channel.send(update(guesses));
             // message.channel.send(print(prev));
             message.channel.send(letters(green, yellow, grey, unused));
-        })
+        });
     }
 }
