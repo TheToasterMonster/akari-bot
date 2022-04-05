@@ -1,3 +1,5 @@
+// https://github.com/me50/TheToasterMonster/blob/ai50/projects/2020/x/tictactoe/tictactoe.py
+
 function deepcopy(arr) {
     return JSON.parse(JSON.stringify(arr));
 }
