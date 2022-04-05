@@ -61,6 +61,7 @@ module.exports = {
                     message.channel.send("That's not a valid choice.");
                     return;
                 }
+                showBoard();
                 message.channel.send("Your turn!");
                 acquiredMode = true;
                 return;
@@ -80,6 +81,7 @@ module.exports = {
                 return;
             }
             makeMove(coords, isX ? 1 : 2);
+            showBoard();
 
             if (ai.terminal(fastBoard)) {
                 if (ai.winner(fastBoard)) {
@@ -87,6 +89,7 @@ module.exports = {
                 } else {
                     message.channel.send("Tie!");
                 }
+                message.channel.send("Ending game...");
                 collector.stop();
                 return;
             }
@@ -94,6 +97,7 @@ module.exports = {
             message.channel.send("Thinking...");
             let move = ai.minimax(fastBoard);
             makeMove(move, isX ? 2 : 1);
+            showBoard();
 
             if (ai.terminal(fastBoard)) {
                 if (ai.winner(fastBoard)) {
@@ -101,6 +105,7 @@ module.exports = {
                 } else {
                     message.channel.send("Tie!");
                 }
+                message.channel.send("Ending game...");
                 collector.stop();
                 return;
             }
@@ -110,7 +115,6 @@ module.exports = {
         const makeMove = (move, player) => {
             board[move[0]][move[1]] = player == 1 ? X : O;
             fastBoard[move[0]][move[1]] = player;
-            showBoard();
         }
 
         const convert = (input) => {
