@@ -1,11 +1,3 @@
-function initial_state() {
-    return [
-        [0, 0, 0],
-        [0, 0, 0],
-        [0, 0, 0]
-    ];
-}
-
 function deepcopy(arr) {
     return JSON.parse(JSON.stringify(arr));
 }
@@ -146,19 +138,35 @@ function minimize(board, curr_highest) {
 }
 
 function minimax(board) {
-    let moves = actions(board);
-
-    let curr_lowest = 2;
-    let index = -1;
-    for (let i = 0; i < moves.length; i++) {
-        let val = maximize(result(board, moves[i]), 2);
-        if (val < curr_lowest) {
-            curr_lowest = val;
-            index = i;
+    if (player(board) == 1) {
+        let moves = actions(board);
+        
+        let curr_highest = -2;
+        let index = -1;
+        for (let i = 0; i < moves.length; i++) {
+            let val = minimize(result(board, moves[i]), -2);
+            if (val > curr_highest) {
+                curr_highest = val;
+                index = i;
+            }
         }
-    }
 
-    return moves[index];
+        return moves[index];
+    } else {
+        let moves = actions(board);
+
+        let curr_lowest = 2;
+        let index = -1;
+        for (let i = 0; i < moves.length; i++) {
+            let val = maximize(result(board, moves[i]), 2);
+            if (val < curr_lowest) {
+                curr_lowest = val;
+                index = i;
+            }
+        }
+
+        return moves[index];
+    }
 }
 
 module.exports = {

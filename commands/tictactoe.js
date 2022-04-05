@@ -29,6 +29,16 @@ module.exports = {
         }
 
         showBoard();
+        message.channel.send(
+            "Welcome to Tic Tac Toe! The objective is to get 3 X's or O's in " +
+            "a row, column, or diagonal. Move by inputting the column (1-3, " +
+            "left-right) followed by the row (1-3, down-up) of the square you " +
+            "wish to claim, separated by a space."
+        );
+
+        let acquiredMode = false;
+        let isX = true;
+        message.channel.send("Do you want to play as X or O?");
 
         const filter = m => {
             return m.author == message.author;
@@ -41,10 +51,35 @@ module.exports = {
                 return;
             }
 
-            let coords = m.content.split(' ').map(s => parseInt(s.trim()));
-            board[coords[0]][coords[1]] = X;
-            fastBoard[coords[0]][coords[1]] = 1;
-            showBoard();
+            if (!acquiredMode) {
+                if (m.content.toUpperCase() == 'O') {
+                    isX = false;
+                    message.channel.send("Thinking...");
+                    let move = ai.minimax(fastBoard);
+                    makeMove(move, 1);
+                } else if (m.content.toUpperCase() != 'X') {
+                    message.channel.send("That's not a valid choice.");
+                    return;
+                }
+                message.channel.send("Your turn!");
+                acquiredMode = true;
+                return;
+            }
+
+            let coords = m.content.split(' ').map(s => parseInt(s.trim()) - 1);
+            if (isNaN(coords[0]) || isNaN(coords[1])) {
+                return;
+            }
+            convert(coords);
+            if (coords[0] < 0 || coords[0] > 2 || coords[1] < 0 || coords[1] > 2) {
+                message.channel.send("That's not a valid square.");
+                return;
+            }
+            if (fastBoard[coords[0]][coords[1]] != 0) {
+                message.channel.send("That square is already taken.");
+                return;
+            }
+            makeMove(coords, isX ? 1 : 2);
 
             if (ai.terminal(fastBoard)) {
                 if (ai.winner(fastBoard)) {
@@ -58,9 +93,7 @@ module.exports = {
 
             message.channel.send("Thinking...");
             let move = ai.minimax(fastBoard);
-            board[move[0]][move[1]] = O;
-            fastBoard[move[0]][move[1]] = 2;
-            showBoard();
+            makeMove(move, isX ? 2 : 1);
 
             if (ai.terminal(fastBoard)) {
                 if (ai.winner(fastBoard)) {
@@ -71,6 +104,19 @@ module.exports = {
                 collector.stop();
                 return;
             }
+            message.channel.send("Your turn!");
         });
+
+        const makeMove = (move, player) => {
+            board[move[0]][move[1]] = player == 1 ? X : O;
+            fastBoard[move[0]][move[1]] = player;
+            showBoard();
+        }
+
+        const convert = (input) => {
+            let tmp = input[0];
+            input[0] = 2 - input[1];
+            input[1] = tmp;
+        }
     }
 }
