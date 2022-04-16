@@ -26,11 +26,10 @@ function print(previous_guesses) {
     return "Your previous guesses:\n" + previous_guesses.join("\n");
 }
 
-function letters(green, yellow, grey, unused) {
-    return "Green: " + Array.from(green).join(' ') + '\n'
-         + "Yellow: " + Array.from(yellow).join(' ') + '\n'
-         + "Grey: " + Array.from(grey).join(' ') + '\n'
-         + "Unused: " + Array.from(unused).join(' ');
+function letters(yellow, grey, unused) {
+    return "Word contains: " + Array.from(yellow).join(' ') + '\n'
+         + "Word does not contain: " + Array.from(grey).join(' ') + '\n'
+         + "Not guessed: " + Array.from(unused).join(' ');
 }
 
 module.exports = {
@@ -41,7 +40,6 @@ module.exports = {
         console.log(answer);
         
         let prev = [];
-        let green = new Set();
         let yellow = new Set();
         let grey = new Set();
         let unused = new Set('abcdefghijklmnopqrstuvwxyz'.toUpperCase());
@@ -80,8 +78,7 @@ module.exports = {
                 if (m.content[i] == answer[i]) {
                     msg += ":green_square:";
                     guess_results += `**${m.content[i].toUpperCase()}** `;
-                    green.add(m.content[i].toUpperCase());
-                    yellow.delete(m.content[i].toUpperCase());
+                    yellow.add(m.content[i].toUpperCase());
                 } else if (answer.includes(m.content[i])) {
                     msg += ":yellow_square:";
                     guess_results += `${m.content[i].toUpperCase()} `;
@@ -112,9 +109,9 @@ module.exports = {
                 return;
             }
 
-            message.channel.send(update(guesses));
             // message.channel.send(print(prev));
-            message.channel.send(letters(green, yellow, grey, unused));
+            message.channel.send(letters(yellow, grey, unused));
+            message.channel.send(update(guesses));
         });
     }
 }
