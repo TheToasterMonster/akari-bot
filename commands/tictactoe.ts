@@ -1,8 +1,9 @@
+import { Message } from "discord.js"
 const ai = require('../resources/tictactoe/ai');
 
 module.exports = {
     name: 'tictactoe',
-    execute(message, args) {
+    execute(message: Message, args: any[]) {
         const X = ":regional_indicator_x:";
         const O = ":regional_indicator_o:";
         const EMPTY = ":blue_square:";
@@ -40,7 +41,7 @@ module.exports = {
         let isX = true;
         message.channel.send("Do you want to play as X or O?");
 
-        const filter = m => {
+        const filter = (m: Message) => {
             return m.author == message.author;
         }
         const collector = message.channel.createMessageCollector({ filter });
@@ -112,12 +113,12 @@ module.exports = {
             message.channel.send("Your turn!");
         });
 
-        const makeMove = (move, player) => {
+        const makeMove = (move: number[], player: number) => {
             board[move[0]][move[1]] = player == 1 ? X : O;
             fastBoard[move[0]][move[1]] = player;
         }
 
-        const convert = (input) => {
+        const convert = (input: number[]) => {
             let tmp = input[0];
             input[0] = 2 - input[1];
             input[1] = tmp;

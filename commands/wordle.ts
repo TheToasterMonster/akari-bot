@@ -1,9 +1,22 @@
+import { Message } from "discord.js";
+
 const fs = require('fs')
 
-const answers = fs.readFileSync('resources/wordle/answers.txt', 'utf8').split('\r').join(',').split('\n').join(',').split(',').filter(i => i);
-const valid = fs.readFileSync('resources/wordle/guesses.txt', 'utf8').split('\r').join(',').split('\n').join(',').split(',').concat(answers).filter(i => i).sort();
+const answers: string[] =
+    fs.readFileSync('resources/wordle/answers.txt', 'utf8')
+    .split('\r').join(',')
+    .split('\n').join(',')
+    .split(',')
+    .filter((i: any) => i);
+const valid: string[] =
+    fs.readFileSync('resources/wordle/guesses.txt', 'utf8')
+    .split('\r').join(',')
+    .split('\n').join(',')
+    .split(',')
+    .concat(answers)
+    .filter((i: any) => i).sort();
 
-function search(arr, val) {
+function search(arr: any[], val: any) {
     let L = 0, R = arr.length - 1;
     while (R - L >= 0) {
         let mid = L + Math.floor((R - L) / 2);
@@ -18,15 +31,15 @@ function search(arr, val) {
     return false;
 }
 
-function update(guesses) {
+function update(guesses: number) {
     return `You have ${guesses} guesses left.`;
 }
 
-function print(previous_guesses) {
+function print(previous_guesses: string[]) {
     return "Your previous guesses:\n" + previous_guesses.join("\n");
 }
 
-function letters(yellow, grey, unused) {
+function letters(yellow: Set<string>, grey: Set<string>, unused: Set<string>) {
     return "Word contains: " + Array.from(yellow).join(' ') + '\n'
          + "Word does not contain: " + Array.from(grey).join(' ') + '\n'
          + "Not guessed: " + Array.from(unused).join(' ');
@@ -34,20 +47,20 @@ function letters(yellow, grey, unused) {
 
 module.exports = {
     name: 'wordle',
-    execute(message, args) {
-        let guesses = 6;
-        const answer = answers[Math.floor(Math.random() * answers.length)];
+    execute(message: Message, args: any[]) {
+        let guesses: number = 6;
+        const answer: string = answers[Math.floor(Math.random() * answers.length)];
         console.log(answer);
         
-        let prev = [];
-        let yellow = new Set();
-        let grey = new Set();
-        let unused = new Set('abcdefghijklmnopqrstuvwxyz'.toUpperCase());
+        let prev: string[] = [];
+        let yellow: Set<string> = new Set();
+        let grey: Set<string> = new Set();
+        let unused: Set<string> = new Set('abcdefghijklmnopqrstuvwxyz'.toUpperCase());
 
         message.channel.send("Starting game...");
         message.channel.send(update(guesses));
         
-        const filter = m => {
+        const filter = (m: Message) => {
             return m.author == message.author;
         }
         const collector = message.channel.createMessageCollector({ filter });

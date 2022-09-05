@@ -1,10 +1,10 @@
 // https://github.com/me50/TheToasterMonster/blob/ai50/projects/2020/x/tictactoe/tictactoe.py
 
-function deepcopy(arr) {
+function deepcopy(arr: any) {
     return JSON.parse(JSON.stringify(arr));
 }
 
-function player(board) {
+function player(board: any[][]) {
     let x_count = 0;
     let o_count = 0;
 
@@ -25,8 +25,8 @@ function player(board) {
     }
 }
 
-function actions(board) {
-    let squares = [];
+function actions(board: any[][]) {
+    let squares: number[][] = [];
     for (let i = 0; i < 3; i++) {
         for (let j = 0; j < 3; j++) {
             if (board[i][j] == 0) {
@@ -37,13 +37,13 @@ function actions(board) {
     return squares;
 }
 
-function result(board, action) {
+function result(board: any[][], action: any[]) {
     let new_board = deepcopy(board);
     new_board[action[0]][action[1]] = player(board);
     return new_board;
 }
 
-function winner(board) {
+function winner(board: any[][]) {
     let potential_winner = player(board) == 2 ? 1 : 2;
 
     for (let n = 0; n < 3; n++) {
@@ -76,7 +76,7 @@ function winner(board) {
     return 0;
 }
 
-function terminal(board) {
+function terminal(board: any[][]) {
     if (winner(board)) {
         return true;
     }
@@ -92,7 +92,7 @@ function terminal(board) {
     return true;
 }
 
-function utility(board) {
+function utility(board: any[][]) {
     let victor = winner(board);
     if (victor == 1) {
         return 1;
@@ -103,7 +103,7 @@ function utility(board) {
     }
 }
 
-function maximize(board, curr_lowest) {
+function maximize(board: any[][], curr_lowest: number): number {
     if (terminal(board)) {
         return utility(board);
     }
@@ -121,7 +121,7 @@ function maximize(board, curr_lowest) {
     return curr_max;
 }
 
-function minimize(board, curr_highest) {
+function minimize(board: any[][], curr_highest: number): number {
     if (terminal(board)) {
         return utility(board);
     }
@@ -139,7 +139,7 @@ function minimize(board, curr_highest) {
     return curr_min;
 }
 
-function minimax(board) {
+function minimax(board: any[][]): number[] {
     if (player(board) == 1) {
         let moves = actions(board);
         
